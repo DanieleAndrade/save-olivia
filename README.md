@@ -17,6 +17,9 @@
 
 ## Enredo e Personagens
 
+### Enredo
+-
+
 ### Personagem Principal
 - Tartaruga Thembi, que é da espécie Oliva.
 
@@ -25,7 +28,7 @@
 - Anzóis
 - Redes de Pescadores
 
-# Iteração do Jogador
+## Iteração do Jogador
 
-# Controles
+## Controles
 - Joystick e botões de ação
