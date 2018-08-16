@@ -1,2 +1,19 @@
-# save-olivia
-Game Desenvolvido para a Disciplina de Estágio I
+# Save Olívia
+
+## Gênero
+
+## Público Alvo
+
+## Objetivo Geral
+
+## Objetivos Específicos
+
+## Enredo e Personagens
+
+### Personagem Principal
+
+### Inimigos
+
+# Iteração do Jogador
+
+# Controles
