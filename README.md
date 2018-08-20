@@ -29,7 +29,7 @@
 - Redes de Pescadores
 
 ## Fluxo de Telas
-https://github.com/DanieleAndrade/save-olivia/blob/master/fluxo-de-telas%20(1).png
+<img src= "https://github.com/DanieleAndrade/save-olivia/blob/master/fluxo-de-telas%20(1).png">
 
 ## Iteração do Jogador
 
