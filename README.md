@@ -18,7 +18,7 @@
 ## Enredo e Personagens
 
 ### Enredo
--
+- Uma tartaruga mãe em busca de salvar sua filha Olívia. Para isso ela irá enfrentar a poluição dos mares, fugir das redes e anzóis de pescadores.
 
 ### Personagem Principal
 - Tartaruga Thembi, que é da espécie Oliva.
