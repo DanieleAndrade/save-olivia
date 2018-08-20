@@ -28,6 +28,9 @@
 - Anzóis
 - Redes de Pescadores
 
+## Fluxo de Telas
+![Image Fluxo de Telas](/fluxo-de-telas(1).png)
+
 ## Iteração do Jogador
 
 ## Controles
