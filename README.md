@@ -4,7 +4,7 @@
 - Aventura
 
 ## Público Alvo
-- Crianças, Jovens e Adultos
+- Todos os públicos
 
 ## Objetivo Geral
 - Proteger a tartaruga contra inimigos desde seu nascimento até o momento em que ela irá procriar.
