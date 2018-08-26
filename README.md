@@ -25,7 +25,7 @@
 - Tartaruga Thembi, que é da espécie Oliva.
 
 ### Inimigos
-- Lixos (garrafas, sacolas, canudos, latas, copos)
+- Lixos (garrafas, sacolas, latas, copos)
 - Anzóis
 - Redes de Pescadores
 
@@ -41,6 +41,7 @@ A tartaruga deverá coletar comidas para se manter viva. A cada comida coletada 
 Não poderá colidir com garrafas, sacolas, latas. 
 Ao colidir com:
  -garrafas irá perder 10 pontos de vida; 
+ -copos irá perder 5 pontos de vida;
  -sacolas plásticas irá perde 20 pontos de vida;
  -latas irá perder 15 pontos de vida.
 
@@ -62,6 +63,7 @@ Não é permitido subir além do limite, pois ficará pesa na rede de pesca e pe
 
 Ao colidir com: 
 - garrafas: irá perder 10 pontos de vida
+- copos:    irá perder 5 pontos de vida
 - sacolas:  irá perder 20 pontos de vida
 - latas:    irá perder 15 pontos de vida
 - anzol:    irá perder 100 pontos de vida
