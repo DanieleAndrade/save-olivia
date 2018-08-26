@@ -32,8 +32,6 @@
 ## Fluxo de Telas
 <img src= "https://github.com/DanieleAndrade/save-olivia/blob/master/fluxo-de-telas%20(1).png">
 
-## Iteração do Jogador
-
 ## Controles
 - Utilizando touch screen da tela. A cada tap a tartaruga nada.
 
