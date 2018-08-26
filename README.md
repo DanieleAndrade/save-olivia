@@ -38,6 +38,20 @@
 
 ## Regras do jogo com sistema de pontuação
 
+A tartaruga deverá coletar comidas para se manter viva. A cada comida coletada irá ganhar 10 pontos de score e 5 pontos de vida.
+Não poderá colidir com garrafas, sacolas, latas. 
+Ao colidir com:
+ -garrafas irá perder 10 pontos de vida; 
+ -sacolas plásticas irá perde 20 pontos de vida;
+ -latas irá perder 15 pontos de vida.
+
+Deverá coletar o presente da sereia Iara, o qual lhe dará habilidade de destruir os inimigos por 5 segundos e nesse período ganhará 100 pontos de score a cada inimigo destruído. 
+
+A tartaruga deverá coletar a estrela do mar para ganhar 200 pontos de score.
+
+Não poderá colidir com anzóis, pois perderá 100 pontos de vida e o jogo acabará. 
+Não é permitido subir além do limite, pois ficará pesa na rede de pesca e perderá 100 pontos de vida e o jogo irá acabar.
+
 ## Sistema de Vidas
 
 - Se subir além do limite (sair da tela) irá ficar presa na rede e perderá 100 pontos de vida o jogo irá acabar.
@@ -57,7 +71,7 @@ Ao colidir com:
 Ao coletar: 
 - comida:   irá ganhar 10 pontos de score e 5 pontos de vida
 - estrelas do mar: irá ganhar 200 pontos de score
-- presente sereia: irá ganhar habilidade de destruir inimigos/lixo por 10 segundos e ganha 100 score por cada inimigo destruído.
+- presente sereia Iara: irá ganhar habilidade de destruir inimigos/lixo por 5 segundos e ganha 100 score por cada inimigo destruído.
 
 ## Como o jogo acaba
 
