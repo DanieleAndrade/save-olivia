@@ -34,4 +34,32 @@
 ## Iteração do Jogador
 
 ## Controles
-- Joystick e botões de ação
+- Utilizando touch screen da tela. A cada tap a tartaruga nada.
+
+## Regras do jogo com sistema de pontuação
+
+## Sistema de Vidas
+
+- Se subir além do limite (sair da tela) irá ficar presa na rede e perderá 100 pontos de vida o jogo irá acabar.
+- Ao perder todos os pontos de vida o jogo irá acabar.
+- A cada comida coletada irá ganhar 5 pontos de vida.
+- A cada 5 segundos irá perder 10 pontos de vida.
+
+## Sistema de Pontos
+
+Ao colidir com: 
+- garrafas: irá perder 10 pontos de vida
+- sacolas:  irá perder 20 pontos de vida
+- latas:    irá perder 15 pontos de vida
+- anzol:    irá perder 100 pontos de vida
+- rede:     irá perder 100 pontos de vida
+
+Ao coletar: 
+- comida:   irá ganhar 10 pontos de score e 5 pontos de vida
+- estrelas do mar: irá ganhar 200 pontos de score
+- presente sereia: irá ganhar habilidade de destruir inimigos/lixo por 10 segundos e ganha 100 score por cada inimigo destruído.
+
+## Como o jogo acaba
+
+O jogo acaba quando a tartaruga conseguir passar pelas 3 fases chegando a praia e colocando seus ovos. 
+A Olivia nascerá e irá para o mar. 
