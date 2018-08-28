@@ -4,8 +4,7 @@
 - Aventura
 
 ## Público Alvo
-- Crianças partir de 7 anos.
-- Jovens e Adultos.
+- Crianças, Jovens e Adultos a partir de 8 anos.
 
 ## Objetivo Geral
 - Proteger a tartaruga contra inimigos desde seu nascimento até o momento em que ela irá procriar.
