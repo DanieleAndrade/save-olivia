@@ -10,10 +10,11 @@
 - Proteger a tartaruga contra inimigos desde seu nascimento até o momento em que ela irá procriar.
 
 ## Objetivos Específicos
-- Evitar colidir com sacolas plásticas, garrafas, latas, canudos e todo material de poluição.
+- Evitar colidir com sacolas plásticas, garrafas, latas, copos e todo material de poluição.
 - Fugir das redes e dos anzóis de pescadores na região.
 - Encontrar a sereia Iara escondida no mar, para ganhar uma ferramenta que irá ajudar a derrotar o chefão.
 - Coletar comidas pelo caminho para se manter saudável e ganhar pontuação.
+- Coletar a estrela do mar para ganhar pontos extra.
 
 ## Enredo e Personagens
 
