@@ -38,7 +38,7 @@
 
 ## Regras do jogo com sistema de pontuação
 
-A tartaruga deverá coletar comidas para se manter viva. A cada comida coletada irá ganhar 10 pontos de score e 5 pontos de vida.
+O jogador deverá coletar comidas para se manter a tartaruga mãe viva. A cada comida coletada irá ganhar 10 pontos de score e 5 pontos de vida.
 Não poderá colidir com garrafas, sacolas, latas e copos. 
 Ao colidir com:
  -garrafas irá perder 10 pontos de vida; 
