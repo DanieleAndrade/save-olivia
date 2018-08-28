@@ -61,6 +61,7 @@ O jogo inicia com 100 pontos de vida e 0 pontos de score.
 - Ao perder todos os pontos de vida o jogo irá acabar.
 - A cada comida coletada irá ganhar 5 pontos de vida.
 - A cada 5 segundos irá perder 10 pontos de vida.
+- O jogo inicia com 100 pontos de vida.
 
 ## Sistema de Pontos
 
@@ -76,6 +77,8 @@ Ao coletar:
 - comida:   irá ganhar 10 pontos de score e 5 pontos de vida
 - estrelas do mar: irá ganhar 200 pontos de score
 - presente sereia Iara: irá ganhar habilidade de destruir inimigos/lixo por 5 segundos e ganha 100 score por cada inimigo destruído.
+
+O jogo inicia com 0 pontos de score
 
 ## Como o jogo acaba
 
