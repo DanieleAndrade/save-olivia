@@ -41,10 +41,10 @@
 O jogador deverá coletar comidas para manter a tartaruga mãe viva. A cada comida coletada irá ganhar 10 pontos de score e 5 pontos de vida.
 Não poderá colidir com garrafas, sacolas, latas e copos. 
 Ao colidir com:
- -garrafas irá perder 10 pontos de vida; 
- -copos irá perder 5 pontos de vida;
- -sacolas plásticas irá perde 20 pontos de vida;
- -latas irá perder 15 pontos de vida.
+ - garrafas irá perder 10 pontos de vida; 
+ - copos irá perder 5 pontos de vida;
+ - sacolas plásticas irá perde 20 pontos de vida;
+ - latas irá perder 15 pontos de vida.
 
 Deverá coletar o presente da sereia Iara, o qual lhe dará habilidade de colidir com os inimigos por 5 segundos e nesse período ganhará 100 pontos de score a cada colisão. 
 
