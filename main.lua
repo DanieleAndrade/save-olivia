@@ -7,6 +7,7 @@
 
 local physics = require("physics")
 physics.start()
+physics.setGravity( 0, 0 )
 display.setStatusBar(display.HiddenStatusBar)
 
 centroX = display.contentCenterX
@@ -19,19 +20,14 @@ local scrollSpeed = 1
 local initialPosition = 10
 
 enderecoBackground1 = "img/background.jpg"
-enderecoBackground2 = "img/background2.jpg"
+enderecoBackground2 = "img/background3.jpg"
 local background1 = display.newImage(enderecoBackground1)
 background1.width = larguraTela
 background1.height = alturaTela
 background1.x = larguraTela/2
 background1.y = alturaTela*0.5
 
--- background1.width = larguraTela
--- background1.height = alturaTela
--- background1.x = centroX
--- background1.y = centroY
-
-local background2 = display.newImage(enderecoBackground1)
+local background2 = display.newImage(enderecoBackground2)
 background2.width = larguraTela
 background2.height = alturaTela
 background2.x = background1.x + larguraTela
@@ -46,7 +42,7 @@ background3.y = alturaTela*0.5
 
 local turttle = display.newImage("img/turttle.png")
 turttle.x = initialPosition
-turttle.y = centroY
+turttle.y = 5
 
 local garrafa = display.newImage("img/garrafa.png")
 garrafa.x = centroX
@@ -60,29 +56,47 @@ estrela.y = 90
 estrela.width = 50
 estrela.height = 60
 
+local comida = display.newImage("img/comida.png")
+comida.x = 350
+comida.y = 200
+comida.width = 20
+comida.height = 20
+
 
 physics.addBody (garrafa, {isSensor = true})
 garrafa.bodyType = "static"
 garrafa.myName = "garrafa"
 
+
 physics.addBody (estrela, {isSensor = true})
 estrela.bodyType = "static"
 estrela.myName = "estrela"
 
+physics.addBody (comida, {isSensor = true})
+comida.bodyType = "static"
+comida.myName = "comida"
+
 physics.addBody (turttle)
-turttle.gravityScale = 0
 turttle.isFixedRotation = true
 turttle.isSensor = true
 turttle.myName = "turtle"
-
-score = 0
-contadorVida = 100
+turttle.gravityScale = 0
 
 
+
+local score = 0
+local contadorVida = 100
 local turttleFlapDelta = 0
+
+-- Mostrar lives e score
+local livesText = display.newText( "Lives: " .. contadorVida, 30, 15, native.systemFont, 20 )
+local scoreText = display.newText( "Score: " .. score, 240, 15, native.systemFont, 20 )
+
+
 local function flapTurttle (event)
   if (event.phase == "began") then
-    turttleFlapDelta = 20
+    
+    turttleFlapDelta = 18
   end
 end
 
@@ -123,18 +137,17 @@ local function onGlobalCollision( event )
   local obj2 = event.object2
   if(obj1.myName == "garrafa" and obj2.myName == "turtle") then
     display.remove(obj1)
-    if(score < 10) then
-    score = score - 0
-    print("Score atual: " .. score)
-    else 
-      score = score - 10
-      print("Score atual: " .. score)
-    end  
+    contadorVida = contadorVida - 10
 
   elseif(obj1.myName == "estrela" and obj2.myName == "turtle") then
     display.remove(obj1)
     score = score + 200
-    print("Score atual: " .. score)
+
+  elseif(obj1.myName == "comida" and obj2.myName == "turtle") then
+    display.remove(obj1)
+    score = score + 10
+    contadorVida = contadorVida + 5 
+
   end  
 end
 
@@ -154,9 +167,14 @@ local function move(event)
   end
 end 
 
+local function updatePontos()
+  livesText.text = "Lives: " .. contadorVida .. "%"
+  scoreText.text = "Score: " .. score
+end
 
 Runtime:addEventListener ("enterFrame", onUpdate)
 Runtime:addEventListener ("touch", flapTurttle)
 Runtime:addEventListener("collision", onGlobalCollision )
 Runtime:addEventListener("enterFrame", move)
+Runtime:addEventListener ("enterFrame", updatePontos)
 
