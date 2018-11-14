@@ -16,7 +16,7 @@ local backGroup = display.newGroup()
 local mainGroup = display.newGroup()
 local uiGroup = display.newGroup()
 
-local vidas = 3
+local vidas = 0
 local pontos = 0
 local died = false
 local tartarugaFlapDelta = 0
@@ -217,7 +217,7 @@ function scene:create( event )
     function moveComida( )
         for i = #comidaTable, 1, -1 do
             local comida = comidaTable[i]
-    
+            print("testes")
             if(comida.x + comida.contentWidth < -100) then
                 comida.x = W + 10
                 comida.y = math.random(math.random(H))
@@ -306,6 +306,7 @@ function scene:create( event )
     moveCopoTimer = timer.performWithDelay(500, moveCopo, 1000)
     moveComidaTimer = timer.performWithDelay(350, moveComida, 1000)
     moveEstrelaTimer = timer.performWithDelay(200, moveEstrela, 10000)
+
 
     local function onGlobalCollision( event )
 
@@ -604,24 +605,24 @@ function scene:hide( event )
      
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
-        Runtime:removeEventListener("enterFrame", gameOver)
-        Runtime:removeEventListener("enterFrame", moveBackground)
-        Runtime:removeEventListener("enterFrame", onUpdate)
-        Runtime:removeEventListener("touch", flapTartaruga)
-        Runtime:removeEventListener("collision", onGlobalCollision)
-        Runtime:removeEventListener("enterFrame", updatePontos)
-        Runtime:removeEventListener("enterFrame", vida)
-        Runtime:removeEventListener("enterFrame", proximaFase)
-        timer.cancel(criaComidaTimer)
-        timer.cancel(criaEstrelaTimer)
-        timer.cancel(criaGarrafaTimer)
-        timer.cancel(criaCopoTimer)
-        timer.cancel(moveComidaTimer)
-        timer.cancel(moveGarrafaTimer)
-        timer.cancel(moveEstrelaTimer)
-        timer.cancel(moveCopoTimer)
-        audio.stop()
-        physics.pause()
+        -- Runtime:removeEventListener("enterFrame", gameOver)
+        -- Runtime:removeEventListener("enterFrame", moveBackground)
+        -- Runtime:removeEventListener("enterFrame", onUpdate)
+        -- Runtime:removeEventListener("touch", flapTartaruga)
+        -- Runtime:removeEventListener("collision", onGlobalCollision)
+        -- Runtime:removeEventListener("enterFrame", updatePontos)
+        -- Runtime:removeEventListener("enterFrame", vida)
+        -- Runtime:removeEventListener("enterFrame", proximaFase)
+        -- timer.cancel(criaComidaTimer)
+        -- timer.cancel(criaEstrelaTimer)
+        -- timer.cancel(criaGarrafaTimer)
+        -- timer.cancel(criaCopoTimer)
+        -- timer.cancel(moveComidaTimer)
+        -- timer.cancel(moveGarrafaTimer)
+        -- timer.cancel(moveEstrelaTimer)
+        -- timer.cancel(moveCopoTimer)
+        -- audio.stop()
+        -- physics.pause()
      
     end
 end

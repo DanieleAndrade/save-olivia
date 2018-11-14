@@ -16,7 +16,7 @@ local backGroup = display.newGroup()
 local mainGroup = display.newGroup()
 local uiGroup = display.newGroup()
 
-local vidas = 3
+local vidas = 1
 local pontos = 0
 local died = false
 local tartarugaFlapDelta = 0
@@ -36,17 +36,26 @@ local vidasText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
-gameAtivo = true
+local mensagemText
+local gameAtivo = true
 
 function scene:create( event )
-    backgroundmusic = audio.loadSound('audio/backgroundmusic.mp3')
-    audio.play(backgroundmusic, { loops= -1 })     
+    backgroundmusic2 = audio.loadSound('audio/backgroundmusic.mp3')
+    audio.play(backgroundmusic2, { loops= -1 })     
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
 
+    centroX = display.contentCenterX
+    centroY = display.contentCenterY
 
-   -- vidasText = display.newText( uiGroup, "Vidas: " .. vidas, 30, 15, native.systemFont, 20 )
     pontuacaoText = display.newText( uiGroup, "Pontuacao: " .. pontos, 240, 15, native.systemFont, 20 )
+    mensagemText = display.newText( uiGroup, "Bem vindo a fase 2! ", centroX, centroY - 20, native.systemFont, 30 )
+
+    local function esconderMensagem()
+        display.remove(mensagemText)
+    end  
+
+    local mostraMsgTimer = timer.performWithDelay(1000, esconderMensagem, 1)
 
     local function updatePontos()
         pontuacaoText.text = "Pontuacao: " .. pontos
@@ -99,11 +108,10 @@ function scene:create( event )
 
     local function flapTartaruga (event)
         if (event.phase == "began") then
-            if(chamarFuncao) then
-                audio.play(backgroundmusic, { loops= -1 })
-                chamarFuncao = false
-            end 
-            
+            -- if(chamarFuncao) then
+            --     audio.play(backgroundmusic2, { loops= -1 })
+            --     chamarFuncao = false
+            -- end 
             tartarugaFlapDelta = 15
         end
     end
@@ -126,28 +134,29 @@ function scene:create( event )
       
     end
 
-    local function createSacola()
+    local function createsacola()
 
         if(#sacolasTable < 4) then
            
-            local newSacola = display.newImageRect(mainGroup, 'img/personagens/sacola.png', 50, 50 )
-            table.insert( sacolasTable, newSacola )
-            physics.addBody( newSacola, {isSensor = true})
-            newSacola.bodyType = "static"
-            newSacola.myName = "sacola"
+            local newsacola = display.newImageRect(mainGroup, 'img/personagens/sacola.png', 50, 50 )
+            table.insert( sacolasTable, newsacola )
+            physics.addBody( newsacola, {isSensor = true})
+            newsacola.bodyType = "static"
+            newsacola.myName = "sacola"
         
             local whereFrom = 3
             if ( whereFrom == 3 ) then
                 -- From the right
-                newSacola.x = W + 10
-                newSacola.y = math.random(H)
-                newSacola:setLinearVelocity( math.random( -40,40 ), math.random( 1, 50 ) )
+                newsacola.x = W + 10
+                newsacola.y = math.random(H)
+                newsacola:setLinearVelocity( math.random( -40,40 ), math.random( 1, 50 ) )
             end
 
         end
     end
 
-    function moveSacola( )
+    function movesacola( )
+        print('movesacola')
         for i = #sacolasTable, 1, -1 do
             local sacola = sacolasTable[i]
     
@@ -160,28 +169,28 @@ function scene:create( event )
         end
     end
 
-    local function createLata()
+    local function createlata()
 
         if(#latasTable < 3) then
            
-            local newLata = display.newImageRect(mainGroup, 'img/personagens/lata.png', 50, 50 )
-            table.insert( latasTable, newLata )
-            physics.addBody( newLata, {isSensor = true})
-            newLata.bodyType = "static"
-            newLata.myName = "lata"
+            local newlata = display.newImageRect(mainGroup, 'img/personagens/lata.png', 50, 50 )
+            table.insert( latasTable, newlata )
+            physics.addBody( newlata, {isSensor = true})
+            newlata.bodyType = "static"
+            newlata.myName = "lata"
         
             local whereFrom = 3
             if ( whereFrom == 3 ) then
                 -- From the right
-                newLata.x = W + 10
-                newLata.y = math.random(H) + 5
-                newLata:setLinearVelocity( math.random( -50,-4 ), math.random( 1, 20 ) )
+                newlata.x = W + 10
+                newlata.y = math.random(H) + 5
+                newlata:setLinearVelocity( math.random( -50,-4 ), math.random( 1, 20 ) )
             end
 
         end
     end
 
-    function moveLata( )
+    function movelata( )
         for i = #latasTable, 1, -1 do
             local lata = latasTable[i]
     
@@ -194,72 +203,72 @@ function scene:create( event )
         end
     end
 
-    local function createComida2()
+    local function createcomida2()
+        print("entrou")
 
         if(#comida2Table < 4) then
-           
-            local newComida2 = display.newImageRect(mainGroup, 'img/personagens/comida.png', 30, 30 )
-            table.insert( comida2Table, newComida2 )
-            physics.addBody( newComida2, {isSensor = true})
-            newComida2.bodyType = "static"
-            newComida2.myName = "comida2"
+            local newcomida2 = display.newImageRect(mainGroup, 'img/personagens/comida.png', 30, 30 )
+            table.insert( comida2Table, newcomida2 )
+            physics.addBody( newcomida2, {isSensor = true})
+            newcomida2.bodyType = "static"
+            newcomida2.myName = "comida2"
         
             local whereFrom = 3
             if (whereFrom == 3 ) then
                 -- From the right
-                newComida2.x = W + 10
-                newComida2.y = math.random(H)
-                newComida2:setLinearVelocity( math.random( -50,-4 ), math.random( 1,50 ) )
+                newcomida2.x = W + 10
+                newcomida2.y = math.random(H)
+                newcomida2:setLinearVelocity( math.random( -50,-4 ), math.random( 1,50 ) )
             end
         end
     end
 
-    function moveComida2( )
+    function movecomida2( )
         for i = #comida2Table, 1, -1 do
             local comida2 = comida2Table[i]
-            print("testes")
+    
             if(comida2.x + comida2.contentWidth < -100) then
                 comida2.x = W + 10
                 comida2.y = math.random(math.random(H))
             else
 
-                local limiteComida2 = math.random(comida2.y - 5, comida2.y + 5)
-                if(limiteComida2 > H) then
-                    limiteComida2 = H - 5
+                local limitecomida2 = math.random(comida2.y - 5, comida2.y + 5)
+                if(limitecomida2 > H) then
+                    limitecomida2 = H - 5
     
-                elseif(limiteComida2 < 0) then
-                    limiteComida2 = 5
+                elseif(limitecomida2 < 0) then
+                    limitecomida2 = 5
                 end 
-                transition.moveTo( comida2, { x=comida2.x - 10, y=limiteComida2, time=500 } )
+                transition.moveTo( comida2, { x=comida2.x - 10, y=limitecomida2, time=500 } )
             end
         end
     end
 
-    local function createEstrela2()
+    local function createestrela2()
 
         if(#estrela2Table < 1) then
            
-            local newEstrela2 = display.newImageRect(mainGroup,'img/personagens/estrela.png', 40, 40 )
-            table.insert( estrela2Table, newEstrela2 )
-            physics.addBody( newEstrela2, {isSensor = true})
-            newEstrela2.bodyType = "static"
-            newEstrela2.myName = "estrela2"
+            local newestrela2 = display.newImageRect(mainGroup,'img/personagens/estrela.png', 40, 40 )
+            table.insert( estrela2Table, newestrela2 )
+            physics.addBody( newestrela2, {isSensor = true})
+            newestrela2.bodyType = "static"
+            newestrela2.myName = "estrela2"
         
             local whereFrom = math.random( 3 )
 
             
             if ( whereFrom == 1 or whereFrom == 2 or whereFrom == 3 ) then
                 -- From the right
-                newEstrela2.x = W + 10
-                newEstrela2.y = math.random(H)
-                newEstrela2:setLinearVelocity( math.random( -200,-4 ), math.random( 20,60 ) )
+                newestrela2.x = W + 10
+                newestrela2.y = math.random(H)
+                newestrela2:setLinearVelocity( math.random( -200,-4 ), math.random( 20,60 ) )
             end
         
-            newEstrela2:applyTorque( math.random( -6,6 ) )
+            newestrela2:applyTorque( math.random( -6,6 ) )
         end
     end
 
-    function moveEstrela2( )
+    function moveestrela2( )
         for i = #estrela2Table, 1, -1 do
             local estrela2 = estrela2Table[i]
     
@@ -268,45 +277,36 @@ function scene:create( event )
                 estrela2.y = math.random(math.random(H))
             else
                -- estrela2.x = estrela2.x - 10
-               local limiteEstrela2 = math.random(estrela2.y - 30, estrela2.y + 30)
+               local limiteestrela2 = math.random(estrela2.y - 30, estrela2.y + 30)
 
-               if(limiteEstrela2 > H) then
-                limiteEstrela2 = H -5
+               if(limiteestrela2 > H) then
+                limiteestrela2 = H -5
 
-               elseif(limiteEstrela2 < 0) then
-                limiteEstrela2 = 5
+               elseif(limiteestrela2 < 0) then
+                limiteestrela2 = 5
                end 
-                transition.moveTo( estrela2, { x=estrela2.x - 15, y=limiteEstrela2, time=100 } )
+                transition.moveTo( estrela2, { x=estrela2.x - 15, y=limiteestrela2, time=100 } )
             end
         end
     end
 
     -- function proximaFase( )
     --     if(pontos >= 10 and vidas >= 0) then
-    --         timer.cancel(criaComida2Timer)
-    --         timer.cancel(criaEstrela2Timer)
-    --         timer.cancel(criaSacolaTimer)
-    --         timer.cancel(criaLataTimer)
-    --         timer.cancel(moveComida2Timer)
-    --         timer.cancel(moveSacolaTimer)
-    --         timer.cancel(moveEstrela2Timer)
-    --         timer.cancel(moveLataTimer)
-    --         --composer.removeScene("scene1" )
     --         composer.gotoScene("scene2", { time=800, effect="crossFade" })
     --     end    
     -- end
 
     --contadorDeTempoTimer = timer.performWithDelay( 500, proximaFase, 1)
-    criaComida2Timer = timer.performWithDelay(6000, createComida2, 10)
-    criaEstrela2Timer = timer.performWithDelay(20000, createEstrela2, 10)
-    criaSacolaTimer = timer.performWithDelay(5000, createSacola, 10)
-    criaLataTimer = timer.performWithDelay(20000, createLata, 10)
+    criaComida2Timer = timer.performWithDelay(1, createcomida2, -1)
+    criaEstrela2Timer = timer.performWithDelay(1000, createestrela2, -1)
+    criaSacolaTimer = timer.performWithDelay(1000, createsacola, -1)
+    criaLataTimer = timer.performWithDelay(1000, createlata, -1)
 
-    moveSacolaTimer = timer.performWithDelay(500, moveSacola, 1000)
-    moveLataTimer = timer.performWithDelay(500, moveLata, 1000)
-    moveComida2Timer = timer.performWithDelay(350, moveComida2, 1000)
-    moveEstrela2Timer = timer.performWithDelay(200, moveEstrela2, 10000)
-
+    print('timers')
+    moveSacolaTimer = timer.performWithDelay(500, movesacola, -1)
+    moveLataTimer = timer.performWithDelay(500, movelata, -1)
+    moveComida2Timer = timer.performWithDelay(350, movecomida2, -1)
+    moveEstrela2Timer = timer.performWithDelay(200, moveestrela2, -1)
 
     local function onGlobalCollision( event )
 
@@ -416,16 +416,9 @@ function scene:create( event )
     local function gameOver () 
         if(vidas < 0) then
            --timer.cancel(contadorDeTempoTimer)
-            -- timer.cancel(criaComida2Timer)
-            -- timer.cancel(criaEstrela2Timer)
-            -- timer.cancel(criaSacolaTimer)
-            -- timer.cancel(criaLataTimer)
-            -- timer.cancel(moveComida2Timer)
-            -- timer.cancel(moveSacolaTimer)
-            -- timer.cancel(moveEstrela2Timer)
-            -- timer.cancel(moveLataTimer)
+            
             audio.stop()
-            --composer.removeScene( "scene1" )
+            --composer.removeScene( "scene2" )
             composer.gotoScene("gameOver", { time=800, effect="crossFade" })
         end
     end   
@@ -482,7 +475,7 @@ function scene:create( event )
         -- else
         --     vida.alpha = 1
         end
-    end   
+    end
 
     local function resumeGame()
 
@@ -493,7 +486,7 @@ function scene:create( event )
         Runtime:addEventListener("collision", onGlobalCollision)
         Runtime:addEventListener("enterFrame", updatePontos)
         Runtime:addEventListener("enterFrame", vida)
-        --Runtime:addEventListener("enterFrame", proximaFase)
+       -- Runtime:addEventListener("enterFrame", proximaFase)
         timer.resume(criaComida2Timer)
         timer.resume(criaEstrela2Timer)
         timer.resume(criaSacolaTimer)
@@ -502,8 +495,9 @@ function scene:create( event )
         timer.resume(moveSacolaTimer)
         timer.resume(moveEstrela2Timer)
         timer.resume(moveLataTimer)
-        audio.play(backgroundmusic)
-        physics.start() 
+        audio.play(backgroundmusic2)
+        physics.start()  
+        
     end    
 
     local resumeButtonPress = function( event )
@@ -542,7 +536,7 @@ function scene:create( event )
         timer.pause(moveSacolaTimer)
         timer.pause(moveEstrela2Timer)
         timer.pause(moveLataTimer)
-        audio.pause(backgroundmusic)
+        audio.pause(backgroundmusic2)
         physics.pause() 
             
     end    
@@ -564,6 +558,7 @@ function scene:create( event )
     }
 
 
+
     Runtime:addEventListener("enterFrame", gameOver)
     Runtime:addEventListener("enterFrame", moveBackground)
     Runtime:addEventListener ("enterFrame", onUpdate)
@@ -572,6 +567,8 @@ function scene:create( event )
     Runtime:addEventListener ("enterFrame", updatePontos)
     Runtime:addEventListener("enterFrame", vida)
     --Runtime:addEventListener("enterFrame", proximaFase)
+    
+
 
 end
      
@@ -612,17 +609,10 @@ function scene:hide( event )
         -- Runtime:removeEventListener("collision", onGlobalCollision)
         -- Runtime:removeEventListener("enterFrame", updatePontos)
         -- Runtime:removeEventListener("enterFrame", vida)
-        -- --Runtime:removeEventListener("enterFrame", proximaFase)
-        -- timer.cancel(criaComida2Timer)
-        -- timer.cancel(criaEstrela2Timer)
-        -- timer.cancel(criaSacolaTimer)
-        -- timer.cancel(criaLataTimer)
-        -- timer.cancel(moveComida2Timer)
-        -- timer.cancel(moveSacolaTimer)
-        -- timer.cancel(moveEstrela2Timer)
-        -- timer.cancel(moveLataTimer)
-        -- audio.stop()
-        -- physics.pause()
+        --Runtime:removeEventListener("enterFrame", proximaFase)
+        
+        audio.stop()
+        physics.pause() 
      
     end
 end
@@ -632,8 +622,8 @@ end
 function scene:destroy( event )
      
     local sceneGroup = self.view
-    -- Code here runs prior to the removal of scene's view
-    audio.dispose(backgroundmusic)
+	-- Code here runs prior to the removal of scene's view
+	--audio.pause(backgroundmusic)
      
 end
      
