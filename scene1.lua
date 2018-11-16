@@ -24,18 +24,27 @@ local tartaruga
 local garrafa
 local estrela
 local copo
+local lata
+local sacola
 local garrafasTable = {}
 local comidaTable = {}
 local estrelaTable = {}
 local coposTable = {}
+local sacolasTable = {}
+local latasTable = {}
 local criaComidaTimer
 local criaGarrafaTimer
 local criaCopoTimer
 local criaEstrelaTimer
+local criaSacolaTimer
+local criaLataTimer
+local moveLataTimer
 local vidasText
+local faseText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
+faseContador = 1
 gameAtivo = true
 
 function scene:create( event )
@@ -47,6 +56,7 @@ function scene:create( event )
 
    -- vidasText = display.newText( uiGroup, "Vidas: " .. vidas, 30, 15, native.systemFont, 20 )
     pontuacaoText = display.newText( uiGroup, "Pontuacao: " .. pontos, 240, 15, native.systemFont, 20 )
+    faseText = display.newText( uiGroup, "Fase: " .. faseContador, W - 110, 15, native.systemFont, 20 )
 
     local function updatePontos()
         pontuacaoText.text = "Pontuacao: " .. pontos
@@ -97,88 +107,158 @@ function scene:create( event )
 
     chamarFuncao = true
 
-    local function flapTartaruga (event)
-        if (event.phase == "began") then
-            if(chamarFuncao) then
-                audio.play(backgroundmusic, { loops= -1 })
-                chamarFuncao = false
-            end 
+    local function dragTartaruga (event)
+
+        local tartaruga = event.target
+        local phase = event.phase
+
+        if ( "began" == phase ) then
+            -- Set touch focus on the ship
+            display.currentStage:setFocus( tartaruga )
+            tartaruga.touchOffsetY = event.y - tartaruga.y
+        
+        elseif ( "moved" == phase ) then
+            -- Move the ship to the new touch position
+            tartaruga.y = event.y - tartaruga.touchOffsetY
             
-            tartarugaFlapDelta = 15
+        elseif ( "ended" == phase or "cancelled" == phase ) then
+            -- Release touch focus on the ship
+            display.currentStage:setFocus( nil )    
         end
+
+        return true 
     end
 
-    local function onUpdate (event)
+    tartaruga:addEventListener( "touch", dragTartaruga )
 
-        local posicaoTartaruga = tartaruga.y + tartaruga.contentHeight
+    -- local function flapTartaruga (event)
+    --     if (event.phase == "began") then
+    --         if(chamarFuncao) then
+    --             audio.play(backgroundmusic, { loops= -1 })
+    --             chamarFuncao = false
+    --         end 
+            
+    --         tartarugaFlapDelta = 15
+    --     end
+    -- end
 
-        if(posicaoTartaruga > 0 and posicaoTartaruga < H + 100) then
-            if (tartarugaFlapDelta > 0) then
-                tartaruga.y = tartaruga.y - tartarugaFlapDelta
-                tartarugaFlapDelta = tartarugaFlapDelta - 0.6
-            end
-            tartaruga.y = tartaruga.y + 7
-        elseif(posicaoTartaruga < 0) then
-            tartaruga.y = tartaruga.contentHeight
-        elseif(posicaoTartaruga > H) then
-            tartaruga.y = centroY
-        end    
+    -- local function onUpdate (event)
+
+    --     local posicaoTartaruga = tartaruga.y + tartaruga.contentHeight
+
+    --     if(posicaoTartaruga > 0 and posicaoTartaruga < H + 100) then
+    --         if (tartarugaFlapDelta > 0) then
+    --             tartaruga.y = tartaruga.y - tartarugaFlapDelta
+    --             tartarugaFlapDelta = tartarugaFlapDelta - 0.6
+    --         end
+    --         tartaruga.y = tartaruga.y + 7
+    --     elseif(posicaoTartaruga < 0) then
+    --         tartaruga.y = tartaruga.contentHeight
+    --     elseif(posicaoTartaruga > H) then
+    --         tartaruga.y = centroY
+    --     end    
       
+    -- end
+
+    function proximaFase( )
+        faseContador = faseContador + 1   
+        faseText.text = "Fase: " .. faseContador  
     end
+
+    function finalizarJogo( )
+        if(faseContador > 3)then
+            composer.gotoScene("gameOver", { time=800, effect="crossFade" })
+        end 
+    end
+
+    --fase = 1 criar garrafas, mover garrafas, criar copo mover copo
+    --fase = 2 criar sacolas, mover sacolas, criar lata mover lata
+    --fase = 3 criar anzois, mover anzois, criar redes de pesca
+   
+
+    local mudarFaseTime = timer.performWithDelay(30000, proximaFase, 4)
 
     local function createGarrafa()
+            if(faseContador == 1) then
+                if(#garrafasTable < 4) then
+                
+                    newGarrafa = display.newImageRect(mainGroup, 'img/personagens/garrafa.png', 50, 50 )
+                    table.insert( garrafasTable, newGarrafa )
+                    physics.addBody( newGarrafa, {isSensor = true})
+                    newGarrafa.bodyType = "dynamic"
+                    newGarrafa.myName = "garrafa"
+                
+                    local whereFrom = 3
+                    if ( whereFrom == 3 ) then
+                        -- From the right
+                        newGarrafa.x = W + 10
+                        newGarrafa.y = math.random(H)
+                        newGarrafa:setLinearVelocity( math.random( -40,40 ), math.random( 1, 50 ) )
+                    end
 
-        if(#garrafasTable < 4) then
-           
-            local newGarrafa = display.newImageRect(mainGroup, 'img/personagens/garrafa.png', 50, 50 )
-            table.insert( garrafasTable, newGarrafa )
-            physics.addBody( newGarrafa, {isSensor = true})
-            newGarrafa.bodyType = "static"
-            newGarrafa.myName = "garrafa"
-        
-            local whereFrom = 3
-            if ( whereFrom == 3 ) then
-                -- From the right
-                newGarrafa.x = W + 10
-                newGarrafa.y = math.random(H)
-                newGarrafa:setLinearVelocity( math.random( -40,40 ), math.random( 1, 50 ) )
-            end
-
-        end
+                end 
+            else 
+                display.remove(newGarrafa)   
+                for i = #garrafasTable, 1, -1 do
+                    if(garrafasTable[i] == newGarrafa) then
+                        table.remove(garrafasTable, i)
+                        break
+                    end
+                end   
+            end    
     end
 
-    function moveGarrafa( )
-        for i = #garrafasTable, 1, -1 do
-            local garrafa = garrafasTable[i]
     
-            if(garrafa.x + garrafa.contentWidth < -100) then
-                garrafa.x = W + 10
-                garrafa.y = math.random(math.random(H))
-            else
-                transition.moveTo( garrafa, { x=garrafa.x - 10, y=garrafa.y, time=500 } )
-            end
-        end
+    function moveGarrafa( )
+        if(faseContador == 1) then
+            for i = #garrafasTable, 1, -1 do
+                local garrafa = garrafasTable[i]
+        
+                if(garrafa.x + garrafa.contentWidth < -100) then
+                    garrafa.x = W + 10
+                    garrafa.y = math.random(math.random(H))
+                else
+                    local limiteGarrafa = math.random(garrafa.y - 8, garrafa.y + 8)
+                    if(limiteGarrafa > H) then
+                        limiteGarrafa = H - 5
+        
+                    elseif(limiteGarrafa < 0) then
+                        limiteGarrafa = 5
+                    end 
+                    transition.moveTo( garrafa, { x=garrafa.x - 30, y=limiteGarrafa, time=300 } )
+                end
+            end  
+        end    
     end
 
     local function createCopo()
+        if(faseContador == 1) then
+            if(#coposTable < 3) then
+            
+                newCopo = display.newImageRect(mainGroup, 'img/personagens/copo.png', 50, 50 )
+                table.insert( coposTable, newCopo )
+                physics.addBody( newCopo, {isSensor = true})
+                newCopo.bodyType = "static"
+                newCopo.myName = "copo"
+            
+                local whereFrom = 3
+                if ( whereFrom == 3 ) then
+                    -- From the right
+                    newCopo.x = W + 10
+                    newCopo.y = math.random(H) + 5
+                    newCopo:setLinearVelocity( math.random( -50,-4 ), math.random( 1, 20 ) )
+                end
 
-        if(#coposTable < 3) then
-           
-            local newCopo = display.newImageRect(mainGroup, 'img/personagens/copo.png', 50, 50 )
-            table.insert( coposTable, newCopo )
-            physics.addBody( newCopo, {isSensor = true})
-            newCopo.bodyType = "static"
-            newCopo.myName = "copo"
-        
-            local whereFrom = 3
-            if ( whereFrom == 3 ) then
-                -- From the right
-                newCopo.x = W + 10
-                newCopo.y = math.random(H) + 5
-                newCopo:setLinearVelocity( math.random( -50,-4 ), math.random( 1, 20 ) )
             end
-
-        end
+        else
+            display.remove(newCopo)  
+            for i = #coposTable, 1, -1 do
+                if(coposTable[i] == newCopo) then
+                    table.remove(coposTable, i)
+                    break
+                end
+            end  
+        end      
     end
 
     function moveCopo( )
@@ -189,35 +269,123 @@ function scene:create( event )
                 copo.x = W + 10
                 copo.y = math.random(math.random(H))
             else
-                transition.moveTo( copo, { x=copo.x - 10, y=copo.y, time=500 } )
+                transition.moveTo( copo, { x=copo.x - 30, y=copo.y, time=200 } )
             end
         end
     end
+    
+    local function createSacola()
+        if(faseContador == 2) then
+            if(#sacolasTable < 4) then
+            
+                newSacola = display.newImageRect(mainGroup, 'img/personagens/sacola.png', 50, 50 )
+                table.insert( sacolasTable, newSacola )
+                physics.addBody( newSacola, {isSensor = true})
+                newSacola.bodyType = "dynamic"
+                newSacola.myName = "sacola"
+            
+                local whereFrom = 3
+                if ( whereFrom == 3 ) then
+                    -- From the right
+                    newSacola.x = W + 10
+                    newSacola.y = math.random(H)
+                    newSacola:setLinearVelocity( math.random( -40,40 ), math.random( 1, 50 ) )
+                end
+
+            end
+        else 
+            display.remove(newSacola) 
+            for i = #sacolasTable, 1, -1 do
+                if(sacolasTable[i] == newSacola) then
+                    table.remove(sacolasTable, i)
+                    break
+                end
+            end  
+        end       
+    end
+
+    function moveSacola( )
+        if(faseContador == 2) then
+            for i = #sacolasTable, 1, -1 do
+                local sacola = sacolasTable[i]
+        
+                if(sacola.x + sacola.contentWidth < -100) then
+                    sacola.x = W + 10
+                    sacola.y = math.random(math.random(H))
+                else
+                    transition.moveTo( sacola, { x=sacola.x - 50, y=sacola.y, time=500 } )
+                end
+            end
+        end   
+    end
+
+    local function createLata()
+        if(faseContador == 2) then
+            if(#latasTable < 3) then
+            
+                newLata = display.newImageRect(mainGroup, 'img/personagens/lata.png', 50, 50 )
+                table.insert( latasTable, newLata )
+                physics.addBody( newLata, {isSensor = true})
+                newLata.bodyType = "static"
+                newLata.myName = "lata"
+            
+                local whereFrom = 3
+                if ( whereFrom == 3 ) then
+                    -- From the right
+                    newLata.x = W + 10
+                    newLata.y = math.random(H) + 5
+                    newLata:setLinearVelocity( math.random( -50,-4 ), math.random( 1, 20 ) )
+                end
+
+            end
+        else 
+            display.remove(newLata)
+            print("lata")
+            for i = #latasTable, 1, -1 do
+                if(latasTable[i] == newLata) then
+                    table.remove(latasTable, i)
+                    break
+                end
+            end  
+        end        
+    end
+
+    function moveLata( )
+        for i = #latasTable, 1, -1 do
+            local lata = latasTable[i]
+        
+            if(lata.x + lata.contentWidth < -100) then
+                lata.x = W + 10
+                lata.y = math.random(math.random(H))
+            else
+                transition.moveTo( lata, { x=lata.x - 10, y=lata.y, time=500 } )
+            end
+        end   
+    end
 
     local function createComida()
-
         if(#comidaTable < 4) then
-           
+            
             local newComida = display.newImageRect(mainGroup, 'img/personagens/comida.png', 30, 30 )
             table.insert( comidaTable, newComida )
             physics.addBody( newComida, {isSensor = true})
             newComida.bodyType = "static"
             newComida.myName = "comida"
-        
+            
             local whereFrom = 3
             if (whereFrom == 3 ) then
-                -- From the right
+                    -- From the right
                 newComida.x = W + 10
                 newComida.y = math.random(H)
                 newComida:setLinearVelocity( math.random( -50,-4 ), math.random( 1,50 ) )
             end
-        end
+        end    
     end
 
     function moveComida( )
+   
         for i = #comidaTable, 1, -1 do
             local comida = comidaTable[i]
-            print("testes")
             if(comida.x + comida.contentWidth < -100) then
                 comida.x = W + 10
                 comida.y = math.random(math.random(H))
@@ -226,86 +394,77 @@ function scene:create( event )
                 local limiteComida = math.random(comida.y - 5, comida.y + 5)
                 if(limiteComida > H) then
                     limiteComida = H - 5
-    
+        
                 elseif(limiteComida < 0) then
                     limiteComida = 5
                 end 
-                transition.moveTo( comida, { x=comida.x - 10, y=limiteComida, time=500 } )
+                transition.moveTo( comida, { x=comida.x - 30, y=limiteComida, time=400 } )
             end
         end
+           
     end
 
     local function createEstrela()
 
         if(#estrelaTable < 1) then
-           
+            
             local newEstrela = display.newImageRect(mainGroup,'img/personagens/estrela.png', 40, 40 )
             table.insert( estrelaTable, newEstrela )
             physics.addBody( newEstrela, {isSensor = true})
             newEstrela.bodyType = "static"
             newEstrela.myName = "estrela"
-        
+            
             local whereFrom = math.random( 3 )
 
-            
+                
             if ( whereFrom == 1 or whereFrom == 2 or whereFrom == 3 ) then
-                -- From the right
+                    -- From the right
                 newEstrela.x = W + 10
                 newEstrela.y = math.random(H)
                 newEstrela:setLinearVelocity( math.random( -200,-4 ), math.random( 20,60 ) )
             end
-        
-            newEstrela:applyTorque( math.random( -6,6 ) )
+            
+                newEstrela:applyTorque( math.random( -6,6 ) )
         end
+            
     end
 
     function moveEstrela( )
         for i = #estrelaTable, 1, -1 do
             local estrela = estrelaTable[i]
-    
+        
             if(estrela.x + estrela.contentWidth < -100) then
                 estrela.x = W + 10
                 estrela.y = math.random(math.random(H))
             else
-               -- estrela.x = estrela.x - 10
-               local limiteEstrela = math.random(estrela.y - 30, estrela.y + 30)
+                -- estrela.x = estrela.x - 10
+            local limiteEstrela = math.random(estrela.y - 30, estrela.y + 30)
 
-               if(limiteEstrela > H) then
+            if(limiteEstrela > H) then
                 limiteEstrela = H -5
 
-               elseif(limiteEstrela < 0) then
+            elseif(limiteEstrela < 0) then
                 limiteEstrela = 5
-               end 
+            end 
                 transition.moveTo( estrela, { x=estrela.x - 15, y=limiteEstrela, time=100 } )
             end
-        end
-    end
-
-    function proximaFase( )
-        if(pontos >= 10 and vidas >= 0) then
-            timer.cancel(criaComidaTimer)
-            timer.cancel(criaEstrelaTimer)
-            timer.cancel(criaGarrafaTimer)
-            timer.cancel(criaCopoTimer)
-            timer.cancel(moveComidaTimer)
-            timer.cancel(moveGarrafaTimer)
-            timer.cancel(moveEstrelaTimer)
-            timer.cancel(moveCopoTimer)
-            --composer.removeScene("scene1" )
-            composer.gotoScene("scene2", { time=800, effect="crossFade" })
-        end    
+        end        
     end
 
     --contadorDeTempoTimer = timer.performWithDelay( 500, proximaFase, 1)
-    criaComidaTimer = timer.performWithDelay(6000, createComida, 10)
-    criaEstrelaTimer = timer.performWithDelay(20000, createEstrela, 10)
-    criaGarrafaTimer = timer.performWithDelay(5000, createGarrafa, 10)
-    criaCopoTimer = timer.performWithDelay(20000, createCopo, 10)
+    criaComidaTimer = timer.performWithDelay(1000, createComida, -1)
+    criaEstrelaTimer = timer.performWithDelay(10000, createEstrela, -1)
+    criaGarrafaTimer = timer.performWithDelay(3000, createGarrafa, -1)
+    criaCopoTimer = timer.performWithDelay(5000, createCopo, -1)
+    criaSacolaTimer = timer.performWithDelay(3000, createSacola, -1)
+    criaLataTimer = timer.performWithDelay(3000, createLata, -1)
 
-    moveGarrafaTimer = timer.performWithDelay(500, moveGarrafa, 1000)
-    moveCopoTimer = timer.performWithDelay(500, moveCopo, 1000)
-    moveComidaTimer = timer.performWithDelay(350, moveComida, 1000)
-    moveEstrelaTimer = timer.performWithDelay(200, moveEstrela, 10000)
+    moveGarrafaTimer = timer.performWithDelay(450, moveGarrafa, -1)
+    moveCopoTimer = timer.performWithDelay(100, moveCopo, -1)
+    moveComidaTimer = timer.performWithDelay(350, moveComida, -1)
+    moveEstrelaTimer = timer.performWithDelay(100, moveEstrela, -1)
+    moveSacolaTimer = timer.performWithDelay(450, moveSacola, -1)
+    moveLataTimer = timer.performWithDelay(450, moveLata, -1)
 
 
     local function onGlobalCollision( event )
@@ -409,23 +568,56 @@ function scene:create( event )
                     break
                 end
             end
+         
+        elseif(obj2.myName == "sacola" and obj1.myName == "tartaruga" )then
+            display.remove(obj2)
+            vidas = vidas - 1
+        
+            for i = #sacolasTable, 1, -1 do
+                if(sacolasTable[i] == obj2) then
+                    table.remove(sacolasTable, i)
+                    break
+                end
+            end
+        
+        elseif(obj1.myName == "sacola" and obj2.myName == "tartaruga") then 
+            display.remove(obj1)
+            vidas = vidas - 1
+        
+            for i = #sacolasTable, 1, -1 do
+                if(sacolasTable[i] == obj1) then
+                    table.remove(sacolasTable, i)
+                    break
+                end
+            end  
+            
+        elseif(obj2.myName == "lata" and obj1.myName == "tartaruga" )then
+            display.remove(obj2)
+            vidas = vidas - 1
+            
+            for i = #latasTable, 1, -1 do
+                if(latasTable[i] == obj2) then
+                    table.remove(latasTable, i)
+                    break
+                end
+            end
+            
+        elseif(obj1.myName == "lata" and obj2.myName == "tartaruga") then 
+            display.remove(obj1)
+            vidas = vidas - 1
+            
+            for i = #latasTable, 1, -1 do
+                if(latasTable[i] == obj1) then
+                    table.remove(latasTable, i)
+                    break
+                end
+            end          
     
         end  
     end
 
     local function gameOver () 
         if(vidas < 0) then
-           --timer.cancel(contadorDeTempoTimer)
-            timer.cancel(criaComidaTimer)
-            timer.cancel(criaEstrelaTimer)
-            timer.cancel(criaGarrafaTimer)
-            timer.cancel(criaCopoTimer)
-            timer.cancel(moveComidaTimer)
-            timer.cancel(moveGarrafaTimer)
-            timer.cancel(moveEstrelaTimer)
-            timer.cancel(moveCopoTimer)
-            audio.stop()
-            --composer.removeScene( "scene1" )
             composer.gotoScene("gameOver", { time=800, effect="crossFade" })
         end
     end   
@@ -565,13 +757,15 @@ function scene:create( event )
 
 
     Runtime:addEventListener("enterFrame", gameOver)
+    Runtime:addEventListener("enterFrame", finalizarJogo)
     Runtime:addEventListener("enterFrame", moveBackground)
-    Runtime:addEventListener ("enterFrame", onUpdate)
-    Runtime:addEventListener ("touch", flapTartaruga)
+   -- Runtime:addEventListener ("enterFrame", onUpdate)
+   -- Runtime:addEventListener ("touch", flapTartaruga)
     Runtime:addEventListener("collision", onGlobalCollision)
     Runtime:addEventListener ("enterFrame", updatePontos)
     Runtime:addEventListener("enterFrame", vida)
-    Runtime:addEventListener("enterFrame", proximaFase)
+    
+    
 
 end
      
@@ -605,24 +799,6 @@ function scene:hide( event )
      
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
-        -- Runtime:removeEventListener("enterFrame", gameOver)
-        -- Runtime:removeEventListener("enterFrame", moveBackground)
-        -- Runtime:removeEventListener("enterFrame", onUpdate)
-        -- Runtime:removeEventListener("touch", flapTartaruga)
-        -- Runtime:removeEventListener("collision", onGlobalCollision)
-        -- Runtime:removeEventListener("enterFrame", updatePontos)
-        -- Runtime:removeEventListener("enterFrame", vida)
-        -- Runtime:removeEventListener("enterFrame", proximaFase)
-        -- timer.cancel(criaComidaTimer)
-        -- timer.cancel(criaEstrelaTimer)
-        -- timer.cancel(criaGarrafaTimer)
-        -- timer.cancel(criaCopoTimer)
-        -- timer.cancel(moveComidaTimer)
-        -- timer.cancel(moveGarrafaTimer)
-        -- timer.cancel(moveEstrelaTimer)
-        -- timer.cancel(moveCopoTimer)
-        -- audio.stop()
-        -- physics.pause()
      
     end
 end
@@ -633,7 +809,6 @@ function scene:destroy( event )
      
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
-    audio.dispose(backgroundmusic)
      
 end
      
@@ -642,9 +817,9 @@ end
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
 scene:addEventListener( "create", scene )
-scene:addEventListener( "show", scene )
-scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
+--scene:addEventListener( "show", scene )
+--scene:addEventListener( "hide", scene )
+--scene:addEventListener( "destroy", scene )
 -- -----------------------------------------------------------------------------------
      
 return scene

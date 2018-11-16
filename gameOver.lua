@@ -65,10 +65,6 @@ function scene:create( event )
     mensagemText = display.newText( uiGroup, "Você falhou! ", centroX + 40, centroY - 20, native.systemFont, 50 )
 
     local function gotoMenu()
-        display.remove(mensagemText)
-        --timer.cancel(moveBack3Timer)
-        --timer.cancel(moveBack2Timer)
-        --timer.cancel(moveAncoraTimer)
 		composer.gotoScene( "menu", { time=800, effect="crossFade" } )
 	end
 
@@ -128,9 +124,9 @@ end
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
 scene:addEventListener( "create", scene )
-scene:addEventListener( "show", scene )
-scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
+--scene:addEventListener( "show", scene )
+--scene:addEventListener( "hide", scene )
+--scene:addEventListener( "destroy", scene )
 -- -----------------------------------------------------------------------------------
 
 return scene

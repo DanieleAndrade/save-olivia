@@ -93,15 +93,17 @@ function scene:create( event )
 
 		local function gotoPhaseOne()
 			audio.pause(backgroundmusic)
-			--timer.cancel(moveAguaVivaTimer)
-			--timer.cancel(gameLoopTimer)
 		    composer.gotoScene( "scene1", { time=800, effect="crossFade" } )
-		   --composer.gotoScene( "gameOver", { time=800, effect="crossFade" } )
         end
 
 		local logo = display.newImageRect( mainGroup, 'img/logo.png', 200, 200)
         logo.x = display.contentCenterX 
         logo.y = display.contentCenterY - 60
+
+		local function onPress( event )
+			print("B5 pressed")
+			timer.performWithDelay(3000, function() event.target:removeSelf(); end)
+		end
 
         local button_play = widget.newButton
         {
@@ -110,7 +112,8 @@ function scene:create( event )
             width = 200,
             height = 60,
             defaultFile = 'img/botoes/play.png',
-            overFile = 'img/botoes/play.png',
+			overFile = 'img/botoes/play.png',
+			onPress = onPress
         }
 
 		button_play:addEventListener( "tap", gotoPhaseOne )
@@ -145,7 +148,7 @@ function scene:hide( event )
      
     elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
-		audio.pause(backgroundmusic)
+	
      
 	end
 end
@@ -156,7 +159,7 @@ function scene:destroy( event )
      
     local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-	audio.pause(backgroundmusic)
+
      
 end
      
@@ -165,9 +168,9 @@ end
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
 scene:addEventListener( "create", scene )
-scene:addEventListener( "show", scene )
-scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
+--scene:addEventListener( "show", scene )
+--scene:addEventListener( "hide", scene )
+--scene:addEventListener( "destroy", scene )
 -- -----------------------------------------------------------------------------------
      
 return scene
