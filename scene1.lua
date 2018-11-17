@@ -251,6 +251,7 @@ function scene:create( event )
 
             end
         else
+            timer.cancel(criaCopoTimer)
             display.remove(newCopo)  
             for i = #coposTable, 1, -1 do
                 if(coposTable[i] == newCopo) then
@@ -338,7 +339,8 @@ function scene:create( event )
                 end
 
             end
-        else 
+        else
+            timer.cancel(criaLataTimer)
             display.remove(newLata)
             print("lata")
             for i = #latasTable, 1, -1 do
