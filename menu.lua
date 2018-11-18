@@ -38,6 +38,14 @@ function scene:create( event )
 		agua_viva.x = display.contentCenterX - 190
 		agua_viva.y = display.contentCenterY + 80
 
+		local function moveBackground2()
+			local limiteBackX = math.random(background2.x - 3, background2.x + 3)
+			local limiteBackY = math.random(background2.y - 1, background2.y + 1)
+			transition.moveTo(background2, { x=limiteBackX, y=limiteBackY, time=200 } )
+		end    
+	
+		local moveBack2Timer = timer.performWithDelay(500, moveBackground2, 2000)
+
 		local function moveAguaViva()
 			local limiteAguaViva = math.random(agua_viva.y - 5, agua_viva.y + 5)
 

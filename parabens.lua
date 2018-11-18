@@ -50,35 +50,50 @@ function scene:create( event )
     local moveAncoraTimer = timer.performWithDelay(500, moveAncora, 2000)
 
     local function moveBackground2()
-        local limiteBack2 = math.random(background2.x - 6, background2.x + 6)
-        transition.moveTo(background2, { x=limiteBack2, y=background2.y, time=200 } )
-
-        local limiteBack3 = math.random(background3.x - 6, background3.x + 6)
-        transition.moveTo(background3, { x=limiteBack3, y=background3.y, time=200 } )
+        local limiteBack = math.random(background2.x - 6, background2.x + 6)
+        transition.moveTo(background2, { x=limiteBack, y=background2.y, time=200 } )
 
     end    
 
     local moveBack2Timer = timer.performWithDelay(500, moveBackground2, 2000)
 
+    local function moveBackground3()
+        local limiteBack = math.random(background3.x - 6, background3.x + 6)
+        transition.moveTo(background3, { x=limiteBack, y=background3.y, time=200 } )
 
-    mensagemText = display.newText( uiGroup, "Game Over! ", centroX + 40, centroY - 20, 'fonts/SF Atarian System Extended Bold.ttf', 50 )
+    end    
 
-    local function gotoMenu()
-        audio.stop(gameOverdMusic)
-		composer.gotoScene( "menu", { time=800, effect="crossFade" } )
-	end
+    local moveBack3Timer = timer.performWithDelay(500, moveBackground3, 2000)
 
-    local button_voltar = widget.newButton
+
+    mensagemText = display.newText( uiGroup, "Parabens! A Olivia foi salva! ", centroX + 40, centroY - 20, 'fonts/SF Atarian System Extended Bold.ttf', 25 )
+    
+    local function closeapp()
+        if  system.getInfo("platformName")=="Android" then
+            native.requestExit()
+        else
+            os.exit() 
+       end
+ 
+    end
+ 
+    local function myButton( event )
+        timer.performWithDelay(1000,closeapp)
+    end    
+ 
+
+    local myButton = widget.newButton
     {
-        left = 180,
+        left = 139,
         top = 180,
         width = 200,
         height = 60,
         defaultFile = 'img/botoes/sair.png',
         overFile = 'img/botoes/sair.png',
+        onPress = myButton
     }
 
-    button_voltar:addEventListener( "tap", gotoMenu )
+    myButton:addEventListener( "tap", myButton )
 
 
 end

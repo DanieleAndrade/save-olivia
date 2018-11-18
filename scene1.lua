@@ -16,7 +16,7 @@ local backGroup = display.newGroup()
 local mainGroup = display.newGroup()
 local uiGroup = display.newGroup()
 
-local vidas = 0
+local vidas = 3
 local pontos = 0
 local died = false
 local tartarugaFlapDelta = 0
@@ -26,6 +26,8 @@ local estrela
 local copo
 local lata
 local sacola
+local anzol
+local anzolTable = {}
 local garrafasTable = {}
 local comidaTable = {}
 local estrelaTable = {}
@@ -33,33 +35,30 @@ local coposTable = {}
 local sacolasTable = {}
 local latasTable = {}
 local criaComidaTimer
-local criaGarrafaTimer
-local criaCopoTimer
 local criaEstrelaTimer
-local criaSacolaTimer
-local criaLataTimer
-local moveLataTimer
 local vidasText
 local faseText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
-faseContador = 1
+faseContador = 2
 gameAtivo = true
 
+local backgroundmusic = audio.loadStream('audio/backgroundmusic.mp3')
+
 function scene:create( event )
-    backgroundmusic = audio.loadSound('audio/backgroundmusic.mp3')
-    audio.play(backgroundmusic, { loops= -1 })     
+    
+    --audio.play(backgroundmusic, { channel=1, loops=-1 })     
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
 
 
    -- vidasText = display.newText( uiGroup, "Vidas: " .. vidas, 30, 15, native.systemFont, 20 )
-    pontuacaoText = display.newText( uiGroup, "Pontuacao: " .. pontos, 240, 15, native.systemFont, 20 )
-    faseText = display.newText( uiGroup, "Fase: " .. faseContador, W - 110, 15, native.systemFont, 20 )
+    pontuacaoText = display.newText( uiGroup, "Scores: " .. pontos, 210, 15, 'fonts/SF Atarian System Extended Bold.ttf', 20 )
+    faseText = display.newText( uiGroup, "Level: " .. faseContador, W - 110, 15, 'fonts/SF Atarian System Extended Bold.ttf', 20 )
 
     local function updatePontos()
-        pontuacaoText.text = "Pontuacao: " .. pontos
+        pontuacaoText.text = "Scores: " .. pontos
     end
 
     local background = display.newImageRect( backGroup, 'img/background/back.png', 1250, 700)
@@ -160,23 +159,74 @@ function scene:create( event )
       
     -- end
 
+    levelSound = audio.loadSound( "audio/Level Up!/piano.wav" )
+
     function proximaFase( )
         faseContador = faseContador + 1   
         faseText.text = "Fase: " .. faseContador  
+        audio.play( levelSound )    
     end
 
     function finalizarJogo( )
         if(faseContador > 3)then
-            composer.gotoScene("gameOver", { time=800, effect="crossFade" })
+            composer.gotoScene("parabens", { time=800, effect="crossFade" })
         end 
     end
-
-    --fase = 1 criar garrafas, mover garrafas, criar copo mover copo
-    --fase = 2 criar sacolas, mover sacolas, criar lata mover lata
-    --fase = 3 criar anzois, mover anzois, criar redes de pesca
    
 
     local mudarFaseTime = timer.performWithDelay(30000, proximaFase, 4)
+
+        local function createAnzol()
+            if(faseContador == 3) then
+                if(#anzolTable < 4) then
+                
+                    newAnzol = display.newImageRect(mainGroup, 'img/personagens/anzol.png', 50, 50 )
+                    table.insert( anzolTable, newAnzol )
+                    physics.addBody( newAnzol, {isSensor = true})
+                    newAnzol.bodyType = "dynamic"
+                    newAnzol.myName = "anzol"
+                
+                    local whereFrom = 3
+                    if ( whereFrom == 3 ) then
+                        -- From the right
+                        newAnzol.x = W + 10
+                        newAnzol.y = math.random(H)
+                        newAnzol:setLinearVelocity( math.random( -40,40 ), math.random( 1, 50 ) )
+                    end
+
+                end 
+            else 
+                display.remove(newAnzol)   
+                for i = #anzolTable, 1, -1 do
+                    if(anzolTable[i] == newAnzol) then
+                        table.remove(anzolTable, i)
+                        break
+                    end
+                end   
+            end    
+        end
+
+
+    function moveAnzol( )
+            for i = #anzolTable, 1, -1 do
+                local anzol = anzolTable[i]
+        
+                if(anzol.x + anzol.contentWidth < -100) then
+                    anzol.x = W + 10
+                    anzol.y = math.random(math.random(H))
+                else
+                    local limiteAnzol = math.random(anzol.y - 30, anzol.y + 10)
+                    if(limiteAnzol > H) then
+                        limiteAnzol = H - 5
+        
+                    elseif(limiteAnzol < 0) then
+                        limiteAnzol = 5
+                    end 
+                    transition.moveTo( anzol, { x=anzol.x - 50, y=limiteAnzol, time=400 } )
+                end
+            end  
+           
+    end
 
     local function createGarrafa()
             if(faseContador == 1) then
@@ -238,7 +288,7 @@ function scene:create( event )
                 newCopo = display.newImageRect(mainGroup, 'img/personagens/copo.png', 50, 50 )
                 table.insert( coposTable, newCopo )
                 physics.addBody( newCopo, {isSensor = true})
-                newCopo.bodyType = "static"
+                newCopo.bodyType = "dynamic"
                 newCopo.myName = "copo"
             
                 local whereFrom = 3
@@ -269,7 +319,7 @@ function scene:create( event )
                 copo.x = W + 10
                 copo.y = math.random(math.random(H))
             else
-                transition.moveTo( copo, { x=copo.x - 30, y=copo.y, time=200 } )
+                transition.moveTo( copo, { x=copo.x - 10, y=copo.y, time=200 } )
             end
         end
     end
@@ -313,7 +363,14 @@ function scene:create( event )
                     sacola.x = W + 10
                     sacola.y = math.random(math.random(H))
                 else
-                    transition.moveTo( sacola, { x=sacola.x - 50, y=sacola.y, time=500 } )
+                    local limiteSacola = math.random(sacola.y - 30, sacola.y + 10)
+                    if(limiteSacola > H) then
+                        limiteSacola = H - 5
+        
+                    elseif(limiteSacola < 0) then
+                        limiteSacola = 5
+                    end 
+                    transition.moveTo( sacola, { x=sacola.x - 50, y=limiteSacola, time=400 } )
                 end
             end
         end   
@@ -326,7 +383,7 @@ function scene:create( event )
                 newLata = display.newImageRect(mainGroup, 'img/personagens/lata.png', 50, 50 )
                 table.insert( latasTable, newLata )
                 physics.addBody( newLata, {isSensor = true})
-                newLata.bodyType = "static"
+                newLata.bodyType = "dynamic"
                 newLata.myName = "lata"
             
                 local whereFrom = 3
@@ -340,7 +397,6 @@ function scene:create( event )
             end
         else 
             display.remove(newLata)
-            print("lata")
             for i = #latasTable, 1, -1 do
                 if(latasTable[i] == newLata) then
                     table.remove(latasTable, i)
@@ -358,7 +414,14 @@ function scene:create( event )
                 lata.x = W + 10
                 lata.y = math.random(math.random(H))
             else
-                transition.moveTo( lata, { x=lata.x - 10, y=lata.y, time=500 } )
+                local limiteLata = math.random(lata.y - 30, lata.y + 10)
+                    if(limiteLata > H) then
+                        limiteLata = H - 5
+        
+                    elseif(limiteLata < 0) then
+                        limiteLata = 5
+                    end 
+                transition.moveTo( lata, { x=lata.x - 60, y=limiteLata, time=400 } )
             end
         end   
     end
@@ -369,7 +432,7 @@ function scene:create( event )
             local newComida = display.newImageRect(mainGroup, 'img/personagens/comida.png', 30, 30 )
             table.insert( comidaTable, newComida )
             physics.addBody( newComida, {isSensor = true})
-            newComida.bodyType = "static"
+            newComida.bodyType = "dynamic"
             newComida.myName = "comida"
             
             local whereFrom = 3
@@ -411,7 +474,7 @@ function scene:create( event )
             local newEstrela = display.newImageRect(mainGroup,'img/personagens/estrela.png', 40, 40 )
             table.insert( estrelaTable, newEstrela )
             physics.addBody( newEstrela, {isSensor = true})
-            newEstrela.bodyType = "static"
+            newEstrela.bodyType = "dynamic"
             newEstrela.myName = "estrela"
             
             local whereFrom = math.random( 3 )
@@ -451,20 +514,31 @@ function scene:create( event )
         end        
     end
 
-    --contadorDeTempoTimer = timer.performWithDelay( 500, proximaFase, 1)
+    local function gameLoopTimer()
+
+        createSacola()
+        createLata()
+        createGarrafa()
+        createAnzol()
+        createCopo()
+    end    
+  
+    local function moveLoopTimer()
+        
+        moveGarrafa()
+        moveCopo()
+        moveAnzol()
+        moveLata()
+        moveSacola()
+
+    end  
+
+    gameLoopTimer = timer.performWithDelay(3000, gameLoopTimer, -1)
     criaComidaTimer = timer.performWithDelay(1000, createComida, -1)
     criaEstrelaTimer = timer.performWithDelay(10000, createEstrela, -1)
-    criaGarrafaTimer = timer.performWithDelay(3000, createGarrafa, -1)
-    criaCopoTimer = timer.performWithDelay(5000, createCopo, -1)
-    criaSacolaTimer = timer.performWithDelay(3000, createSacola, -1)
-    criaLataTimer = timer.performWithDelay(3000, createLata, -1)
-
-    moveGarrafaTimer = timer.performWithDelay(450, moveGarrafa, -1)
-    moveCopoTimer = timer.performWithDelay(100, moveCopo, -1)
+    moveLoopTimer = timer.performWithDelay(450, moveLoopTimer, -1)
     moveComidaTimer = timer.performWithDelay(350, moveComida, -1)
     moveEstrelaTimer = timer.performWithDelay(100, moveEstrela, -1)
-    moveSacolaTimer = timer.performWithDelay(450, moveSacola, -1)
-    moveLataTimer = timer.performWithDelay(450, moveLata, -1)
 
 
     local function onGlobalCollision( event )
@@ -515,6 +589,40 @@ function scene:create( event )
                     break
                 end
             end      
+        
+        elseif(obj2.myName == "anzol" and obj1.myName == "tartaruga" )then
+            display.remove(obj2)
+            vidas = vidas - 1
+
+            if(pontos > 10) then
+                pontos = pontos - 10
+            else
+                print(pontos)   
+            end 
+        
+            for i = #anzolTable, 1, -1 do
+                if(anzolTable[i] == obj2) then
+                    table.remove(anzolTable, i)
+                    break
+                end
+            end
+        
+        elseif(obj1.myName == "anzol" and obj2.myName == "tartaruga") then 
+            display.remove(obj1)
+            vidas = vidas - 1
+
+            if(pontos > 10) then
+                pontos = pontos - 10
+            else
+                print(pontos)   
+            end     
+        
+            for i = #anzolTable, 1, -1 do
+                if(anzolTable[i] == obj1) then
+                    table.remove(anzolTable, i)
+                    break
+                end
+            end          
     
         elseif(obj1.myName == "estrela" and obj2.myName == "tartaruga") then
             display.remove(obj1)
@@ -616,8 +724,13 @@ function scene:create( event )
         end  
     end
 
-    local function gameOver () 
-        if(vidas < 0) then
+
+    local function gameOver() 
+        local posicaoTartaruga = tartaruga.y + tartaruga.contentHeight
+        if(vidas < 0 or (posicaoTartaruga < 10 or posicaoTartaruga > H + 15)) then
+            audio.pause(1)
+            audio.pause(levelSound)
+            timer.cancel(mudarFaseTime)
             composer.gotoScene("gameOver", { time=800, effect="crossFade" })
         end
     end   
@@ -627,10 +740,10 @@ function scene:create( event )
     --                      Barra de Vida                                --
     -----------------------------------------------------------------------
 
-    local larguraVida = 70
+    local larguraVida = 100
     local alturaVida = 35
 
-    local posicaoX = 7
+    local posicaoX = 20
     local posicaoY = 22
 
     barraDeVida = display.newImageRect(uiGroup, 'img/vida/vida3.png', larguraVida, alturaVida)
@@ -680,20 +793,15 @@ function scene:create( event )
 
         Runtime:addEventListener("enterFrame", gameOver)
         Runtime:addEventListener("enterFrame", moveBackground)
-        Runtime:addEventListener("enterFrame", onUpdate)
-        Runtime:addEventListener("touch", flapTartaruga)
         Runtime:addEventListener("collision", onGlobalCollision)
         Runtime:addEventListener("enterFrame", updatePontos)
         Runtime:addEventListener("enterFrame", vida)
-        Runtime:addEventListener("enterFrame", proximaFase)
         timer.resume(criaComidaTimer)
         timer.resume(criaEstrelaTimer)
-        timer.resume(criaGarrafaTimer)
-        timer.resume(criaCopoTimer)
         timer.resume(moveComidaTimer)
-        timer.resume(moveGarrafaTimer)
         timer.resume(moveEstrelaTimer)
-        timer.resume(moveCopoTimer)
+        timer.resume(gameLoopTimer)
+        timer.resume(moveLoopTimer)
         audio.play(backgroundmusic)
         physics.start() 
     end    
@@ -720,20 +828,13 @@ function scene:create( event )
         gameAtivo = false
         Runtime:removeEventListener("enterFrame", gameOver)
         Runtime:removeEventListener("enterFrame", moveBackground)
-        Runtime:removeEventListener("enterFrame", onUpdate)
-        Runtime:removeEventListener("touch", flapTartaruga)
         Runtime:removeEventListener("collision", onGlobalCollision)
         Runtime:removeEventListener("enterFrame", updatePontos)
         Runtime:removeEventListener("enterFrame", vida)
-        Runtime:removeEventListener("enterFrame", proximaFase)
-        timer.pause(criaComidaTimer)
-        timer.pause(criaEstrelaTimer)
-        timer.pause(criaGarrafaTimer)
-        timer.pause(criaCopoTimer)
+        timer.pause(gameLoopTimer)
+        timer.pause(moveLoopTimer)
         timer.pause(moveComidaTimer)
-        timer.pause(moveGarrafaTimer)
         timer.pause(moveEstrelaTimer)
-        timer.pause(moveCopoTimer)
         audio.pause(backgroundmusic)
         physics.pause() 
             
@@ -783,6 +884,7 @@ function scene:show( event )
      
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
+        audio.play( backgroundmusic, { channel=1, loops=-1 } )
      
     end
 end
@@ -796,9 +898,29 @@ function scene:hide( event )
      
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
+        Runtime:removeEventListener("enterFrame", gameOver)
+        Runtime:removeEventListener("enterFrame", moveBackground)
+        Runtime:removeEventListener("collision", onGlobalCollision)
+        Runtime:removeEventListener("enterFrame", updatePontos)
+        Runtime:removeEventListener("enterFrame", vida)
+        Runtime:removeEventListener("enterFrame", proximaFase)
+        timer.cancel(criaComidaTimer)
+        timer.cancel(criaEstrelaTimer)
+        timer.cancel(criaGarrafaTimer)
+        timer.cancel(criaCopoTimer)
+        timer.cancel(criaSacolaTimer)
+        timer.cancel(moveComidaTimer)
+        timer.cancel(moveGarrafaTimer)
+        timer.cancel(moveEstrelaTimer)
+        timer.cancel(moveSacolaTimer)
+        timer.cancel(moveCopoTimer)   
+        display.remove(backGroup)
+        display.remove(mainGroup)
+        display.remove(uiGroup) 
      
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+        audio.stop( 1 )
      
     end
 end
@@ -809,6 +931,7 @@ function scene:destroy( event )
      
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
+    audio.dispose(backgroundmusic)
      
 end
      
@@ -817,7 +940,7 @@ end
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
 scene:addEventListener( "create", scene )
---scene:addEventListener( "show", scene )
+scene:addEventListener( "show", scene )
 --scene:addEventListener( "hide", scene )
 --scene:addEventListener( "destroy", scene )
 -- -----------------------------------------------------------------------------------
