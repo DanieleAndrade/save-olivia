@@ -41,7 +41,7 @@ local faseText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
-faseContador = 3
+faseContador = 2
 gameAtivo = true
 
 local backgroundmusic = audio.loadStream('audio/backgroundmusic.mp3')
@@ -169,6 +169,7 @@ function scene:create( event )
 
     function finalizarJogo( )
         if(faseContador > 3)then
+            audio.pause(backgroundmusic)
             composer.gotoScene("parabens", { time=800, effect="crossFade" })
         end 
     end
@@ -363,14 +364,14 @@ function scene:create( event )
                     sacola.x = W + 10
                     sacola.y = math.random(math.random(H))
                 else
-                    local limiteSacola = math.random(sacola.y - 30, sacola.y + 10)
+                    local limiteSacola = math.random(sacola.y - 5, sacola.y + 20)
                     if(limiteSacola > H) then
                         limiteSacola = H - 5
         
                     elseif(limiteSacola < 0) then
                         limiteSacola = 5
                     end 
-                    transition.moveTo( sacola, { x=sacola.x - 50, y=limiteSacola, time=400 } )
+                    transition.moveTo( sacola, { x=sacola.x - 30, y=limiteSacola, time=400 } )
                 end
             end
         end   
