@@ -41,7 +41,7 @@ local faseText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
-faseContador = 1
+faseContador = 3
 gameAtivo = true
 
 local backgroundmusic = audio.loadStream('audio/backgroundmusic.mp3')
@@ -301,7 +301,6 @@ function scene:create( event )
 
             end
         else
-            timer.cancel(criaCopoTimer)
             display.remove(newCopo)  
             for i = #coposTable, 1, -1 do
                 if(coposTable[i] == newCopo) then
@@ -396,8 +395,7 @@ function scene:create( event )
                 end
 
             end
-        else
-            timer.cancel(criaLataTimer)
+        else 
             display.remove(newLata)
             for i = #latasTable, 1, -1 do
                 if(latasTable[i] == newLata) then

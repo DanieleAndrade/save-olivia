@@ -65,6 +65,45 @@ function scene:create( event )
 
     local moveBack3Timer = timer.performWithDelay(500, moveBackground3, 2000)
 
+    local balaoTable = {}
+
+    local function createBalao()
+        tamanhoBalao = math.random(30, 60)
+        local newBalao = display.newImageRect( mainGroup, 'img/background/balao.png', tamanhoBalao, tamanhoBalao, 85 )
+        table.insert( balaoTable, newBalao )
+        physics.addBody( newBalao, "dynamic", { radius=40, bounce=0.8 } )
+        newBalao.myName = "balao"
+
+        local whereFrom = 2
+        if ( whereFrom == 2 ) then
+            newBalao.x = math.random( display.contentWidth )
+            newBalao.y = H + 5
+            newBalao:setLinearVelocity( math.random( -40,40 ), math.random( 40,40 ) )
+        end
+        transition.moveTo( newBalao, { x=newBalao.x, y=-100, time=1500 } )
+    end
+
+    local function gameLoop()
+        createBalao()
+
+        -- Remove bubbles which have drifted off screen
+        for i = #balaoTable, 1, -1 do
+            local thisbalao = balaoTable[i]
+
+            if ( thisbalao.x < -10 or
+                 thisbalao.x > display.contentWidth + 10 or
+                 thisbalao.y < -50 or
+                 thisbalao.y > display.contentHeight + 10 )
+            then
+                display.remove( thisbalao )
+                table.remove( balaoTable, i )
+            end
+
+        end
+
+    end
+
+    gameLoopTimer = timer.performWithDelay( 500, gameLoop, 0 )
 
     mensagemText = display.newText( uiGroup, "Parabens! A Olivia foi salva! ", centroX + 40, centroY - 20, 'fonts/SF Atarian System Extended Bold.ttf', 25 )
     
