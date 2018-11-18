@@ -41,7 +41,7 @@ local faseText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
-faseContador = 2
+faseContador = 1
 gameAtivo = true
 
 local backgroundmusic = audio.loadStream('audio/backgroundmusic.mp3')
