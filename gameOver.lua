@@ -62,11 +62,19 @@ function scene:create( event )
 
 
     mensagemText = display.newText( uiGroup, "Game Over! ", centroX + 40, centroY - 20, 'fonts/SF Atarian System Extended Bold.ttf', 50 )
-
-    local function gotoMenu()
-        audio.stop(gameOverdMusic)
-		composer.gotoScene( "menu", { time=800, effect="crossFade" } )
-	end
+    
+    local function closeapp()
+        if  system.getInfo("platformName")=="Android" then
+            native.requestExit()
+        else
+            os.exit() 
+       end
+ 
+    end
+ 
+    local function myButton( event )
+        timer.performWithDelay(1000,closeapp)
+    end 
 
     local button_voltar = widget.newButton
     {
@@ -76,9 +84,10 @@ function scene:create( event )
         height = 60,
         defaultFile = 'img/botoes/sair.png',
         overFile = 'img/botoes/sair.png',
+        onPress = myButton
     }
 
-    button_voltar:addEventListener( "tap", gotoMenu )
+    button_voltar:addEventListener( "tap", myButton )
 
 
 end

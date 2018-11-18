@@ -41,7 +41,7 @@ local faseText
 local pontuacaoText
 local scrollSpeed = 1
 local proximaFase = 0
-faseContador = 2
+faseContador = 1
 gameAtivo = true
 
 local backgroundmusic = audio.loadStream('audio/backgroundmusic.mp3')
@@ -488,7 +488,6 @@ function scene:create( event )
                 newEstrela:setLinearVelocity( math.random( -200,-4 ), math.random( 20,60 ) )
             end
             
-                newEstrela:applyTorque( math.random( -6,6 ) )
         end
             
     end
@@ -803,7 +802,7 @@ function scene:create( event )
         timer.resume(moveEstrelaTimer)
         timer.resume(gameLoopTimer)
         timer.resume(moveLoopTimer)
-        audio.play(backgroundmusic)
+        audio.play(backgroundmusic,{ channel=1, loops=-1 })
         physics.start() 
     end    
 
@@ -836,6 +835,8 @@ function scene:create( event )
         timer.pause(moveLoopTimer)
         timer.pause(moveComidaTimer)
         timer.pause(moveEstrelaTimer)
+        timer.pause(criaEstrelaTimer)
+        timer.pause(criaComidaTimer)
         audio.pause(backgroundmusic)
         physics.pause() 
             
